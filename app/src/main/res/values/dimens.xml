@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="cardView_text_size">14sp</dimen>
+    <dimen name="detail_text_size">24sp</dimen>
+    <dimen name="empty_text_size">16sp</dimen>
+    <dimen name="padding_16">16dp</dimen>
+    <dimen name="padding_8">8dp</dimen>
+    <dimen name="padding_4">4dp</dimen>
+    <dimen name="padding_0">0dp</dimen>
+    <dimen name="cardView_radius">4dp</dimen>
+</resources>

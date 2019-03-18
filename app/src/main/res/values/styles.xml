@@ -1,0 +1,62 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@android:color/black</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="TextViewStyle" parent="TextAppearance.AppCompat">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textSize">@dimen/detail_text_size</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="CardViewTextStyle" parent="TextViewStyle">
+        <item name="android:textSize">@dimen/cardView_text_size</item>
+        <item name="android:paddingStart">@dimen/padding_8</item>
+        <item name="android:paddingTop">@dimen/padding_4</item>
+        <item name="android:paddingBottom">@dimen/padding_4</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="EmptyTextViewStyle" parent="TextViewStyle">
+        <item name="android:textSize">@dimen/empty_text_size</item>
+    </style>
+
+    <style name="ToolbarStyle" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="colorControlNormal">@android:color/white</item>
+        <item name="titleTextColor">@android:color/white</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/darkGray</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+    </style>
+
+    <style name="CardViewStyle" parent="CardView">
+        <item name="cardCornerRadius">@dimen/cardView_radius</item>
+        <item name="cardElevation">@dimen/padding_4</item>
+        <item name="cardBackgroundColor">@color/darkGray</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+
+    <style name="ButtonStyle" parent="Base.TextAppearance.AppCompat.Button">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:padding">@dimen/padding_16</item>
+        <item name="android:layout_gravity">center_horizontal|bottom</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/padding_16</item>
+        <item name="android:background">@drawable/button_shape</item>
+    </style>
+
+</resources>

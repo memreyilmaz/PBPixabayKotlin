@@ -3,7 +3,7 @@ package com.payback.pbpixabaykotlin
 import android.content.Context
 import android.net.ConnectivityManager
 
-class ConnectionController {
+object ConnectionController {
 
     fun isInternetAvailable(context: Context): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?

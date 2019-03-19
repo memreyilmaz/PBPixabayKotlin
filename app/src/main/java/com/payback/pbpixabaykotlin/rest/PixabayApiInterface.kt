@@ -9,5 +9,6 @@ import retrofit2.http.Query
 interface PixabayApiInterface {
 
     @GET(KEY)
-    fun getSearched (@Query("q") query: String, @Query("image_type") photo: String): Call<ImageResponse> ;
+    fun getSearched (@Query("q") query: String,
+                     @Query("image_type") photo: String): Call<ImageResponse> ;
 }

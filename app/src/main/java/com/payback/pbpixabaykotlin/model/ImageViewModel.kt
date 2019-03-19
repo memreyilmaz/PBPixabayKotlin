@@ -13,7 +13,7 @@ import timber.log.Timber
 
 class ImageViewModel : ViewModel() {
     private var images: MutableLiveData<List<Hit>> = MutableLiveData()
-
+    val photo: String = "photo"
     fun getImages(): LiveData<List<Hit>> {
         return images
     }
@@ -23,20 +23,17 @@ class ImageViewModel : ViewModel() {
 
         apiService = PixabayApiClient.getClient().create()
 
-        val call = apiService.getSearched(searchQuery, "photo")
+        val call = apiService.getSearched(searchQuery, photo)
         call.enqueue(object : Callback<ImageResponse> {
             override fun onResponse(call: Call<ImageResponse>, response: Response<ImageResponse>) {
-                //images.value(response.body()?.hits)
                 Timber.i("Request Url: %s", call.request().url().toString());
                 Timber.i("Response code: %s", response.code());
 
                 images.value = response.body()?.hits
             }
-
             override fun onFailure(call: Call<ImageResponse>, t: Throwable) {
                 Timber.e(t.toString())
             }
         })
-
     }
 }

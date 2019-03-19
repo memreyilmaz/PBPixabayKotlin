@@ -36,10 +36,12 @@ class MainActivity : AppCompatActivity() {
         setUi()
         setRecyclerView()
         checkConnection()
-        when (savedInstanceState){
-            null -> imageViewModel.loadImages(getString(R.string.fruits))
-            else -> searchQuery = savedInstanceState.get(SEARCH_QUERY) as String
+        if (savedInstanceState != null) {
+            searchQuery = savedInstanceState.getString(SEARCH_QUERY)
+        } else {
+            imageViewModel.loadImages(getString(R.string.fruits))
         }
+
 
         imageViewModel.getImages().observe(this, Observer<List<Hit>> {images ->
             if (images.size != 0){
@@ -137,6 +139,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(SEARCH_QUERY,searchQuery)
+        outState.putString(SEARCH_QUERY, searchQuery)
     }
 }

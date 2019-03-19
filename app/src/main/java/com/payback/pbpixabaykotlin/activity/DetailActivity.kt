@@ -4,14 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.payback.pbpixabaykotlin.R
 import com.payback.pbpixabaykotlin.SELECTED_IMAGE
 import com.payback.pbpixabaykotlin.model.Hit
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_detail.*
 import java.lang.String.valueOf
 
 class DetailActivity : AppCompatActivity() {
@@ -27,25 +25,19 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun setUi(){
-        val bigImage: ImageView = findViewById(R.id.detail_imageView)
-        val imageTags: TextView = findViewById(R.id.image_tags_textView)
-        val imageLikesCount: TextView = findViewById(R.id.image_likes_textView)
-        val imageFavouritesCount: TextView = findViewById(R.id.image_favourites_textView)
-        val imageCommentsCount: TextView = findViewById(R.id.image_comments_textView)
-        val toolbar = findViewById(R.id.detail_activity_toolbar) as Toolbar
-        setSupportActionBar(toolbar)
+        setSupportActionBar(detail_activity_toolbar)
         getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
 
         Picasso.with(this)
             .load(hit.largeImageURL)
             .placeholder(R.drawable.pixabay)
             .error(R.drawable.pixabay)
-            .into(bigImage);
+            .into(detail_imageView);
 
-        imageTags.text = hit.tags.replace(","," /")
-        imageLikesCount.text = valueOf(hit.likes)
-        imageFavouritesCount.text = valueOf(hit.favorites)
-        imageCommentsCount.text = valueOf(hit.comments)
+        image_tags_textView.text = hit.tags.replace(","," /")
+        image_likes_textView.text = valueOf(hit.likes)
+        image_favourites_textView.text = valueOf(hit.favorites)
+        image_comments_textView.text = valueOf(hit.comments)
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
       menuInflater.inflate(R.menu.activity_detail_action, menu)

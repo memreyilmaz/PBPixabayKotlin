@@ -5,12 +5,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -21,11 +18,10 @@ import com.payback.pbpixabaykotlin.SELECTED_IMAGE
 import com.payback.pbpixabaykotlin.adapter.ImageAdapter
 import com.payback.pbpixabaykotlin.model.Hit
 import com.payback.pbpixabaykotlin.model.ImageViewModel
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var retryButton: Button
-    lateinit var emptyView : TextView
 
     var searchQuery: String? = null
     lateinit var adapter : ImageAdapter
@@ -49,26 +45,22 @@ class MainActivity : AppCompatActivity() {
             if (images.size != 0){
                 adapter.setImageData(images)
                 adapter.notifyDataSetChanged()
-                if (emptyView.isShown()){
-                    emptyView.visibility = View.GONE
+                if (error_empty_view.isShown()){
+                    error_empty_view.visibility = View.GONE
                     imageRecyclerView.visibility = View.VISIBLE
                 }
             } else {
                 val noResults: String = getString(R.string.no_results, searchQuery)
-                emptyView.text = noResults
-                emptyView.visibility = View.VISIBLE
+                error_empty_view.text = noResults
+                error_empty_view.visibility = View.VISIBLE
                 imageRecyclerView.visibility = View.GONE
             }
         })
     }
     fun setUi(){
-        emptyView = findViewById(R.id.error_empty_view)
-        retryButton = findViewById(R.id.retry_connection_check_button)
+        setSupportActionBar(main_activity_toolbar)
 
-        val toolbar = findViewById(R.id.main_activity_toolbar) as Toolbar
-        setSupportActionBar(toolbar)
-
-        retryButton.setOnClickListener(object : View.OnClickListener {
+        retry_connection_check_button.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 if (ConnectionController.isInternetAvailable(this@MainActivity)){
                     val intent = getIntent()
@@ -96,9 +88,9 @@ class MainActivity : AppCompatActivity() {
     fun checkConnection(){
         if (!ConnectionController.isInternetAvailable(this@MainActivity)){
             imageRecyclerView.visibility = View.GONE
-            emptyView.text = getString(R.string.no_connection)
-            emptyView.visibility = View.VISIBLE
-            retryButton.visibility = View.VISIBLE
+            error_empty_view.text = getString(R.string.no_connection)
+            error_empty_view.visibility = View.VISIBLE
+            retry_connection_check_button.visibility = View.VISIBLE
         }
     }
         fun showDetailActivity(position: Int){

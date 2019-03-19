@@ -1,0 +1,64 @@
+package com.payback.pbpixabaykotlin.adapter
+
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.payback.pbpixabaykotlin.R
+import com.payback.pbpixabaykotlin.model.Hit
+import com.squareup.picasso.Picasso
+
+class ImageAdapter() : RecyclerView.Adapter<ImageAdapter.ImageAdapterViewHolder>() {
+    lateinit var mContext : Context
+    var mImages : List<Hit>? = null
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageAdapter.ImageAdapterViewHolder {
+        mContext = parent.context
+        val view : View = LayoutInflater.from(mContext).inflate(R.layout.image_item, parent, false)
+        return ImageAdapterViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ImageAdapter.ImageAdapterViewHolder, position: Int) {
+        val hit = mImages?.get(position)
+        holder.userNameTextView.text = hit?.user
+        holder.tagsTextView.text = hit?.tags?.replace(","," /")
+        Picasso.with(mContext)
+            .load(hit?.previewURL)
+            .into(holder.posterImageView)
+    }
+
+    override fun getItemCount(): Int {
+        if (mImages == null) return 0
+        return mImages!!.size
+    }
+
+    fun setImageData(images: List<Hit>){
+        mImages = images
+        notifyDataSetChanged()
+    }
+
+    fun getHitAtPosition(position: Int): Hit? {
+        return mImages?.get(position)
+    }
+
+    inner class ImageAdapterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        override fun onClick(v: View?) {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        var userNameTextView : TextView
+        var tagsTextView : TextView
+        var posterImageView : ImageView
+
+        init {
+            itemView.tag = this
+            userNameTextView = itemView.findViewById(R.id.user_name_textView)
+            tagsTextView = itemView.findViewById(R.id.tag_textView)
+            posterImageView = itemView.findViewById(R.id.main_imageView)
+
+            itemView.setOnClickListener(this)
+        }
+    }
+}

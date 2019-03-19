@@ -4,7 +4,7 @@ import com.payback.pbpixabaykotlin.BASE_URL
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class PixabayApiClient {
+object PixabayApiClient {
 
     fun getClient(): Retrofit {
         val retrofit = Retrofit.Builder()

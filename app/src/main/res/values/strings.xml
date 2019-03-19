@@ -11,4 +11,5 @@
 <string name="no_connection">Please Check Your Internet Connection</string>
 <string name="retry">Retry</string>
 <string name="fruits">fruits</string>
+<string name="searchbar_hint">Search Images</string>
 </resources>

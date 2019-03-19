@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_bar_share_icon"
+        android:contentDescription="@string/share"
+        android:icon="@drawable/ic_share"
+        android:nextFocusLeft="@id/action_bar_search_icon"
+        android:orderInCategory="2"
+        android:title="@string/share"
+        app:showAsAction="always|collapseActionView" />
+</menu>

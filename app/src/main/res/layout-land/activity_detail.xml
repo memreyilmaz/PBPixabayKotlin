@@ -14,6 +14,7 @@
             android:background="@android:color/black"
             tools:mContext=".activity.DetailActivity">
 
+
         <androidx.appcompat.widget.Toolbar
                 android:id="@+id/detail_activity_toolbar"
                 android:layout_width="match_parent"

@@ -35,7 +35,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/image_favourites_textView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"/>
 
         <ImageView
                 android:id="@+id/likes_icon"

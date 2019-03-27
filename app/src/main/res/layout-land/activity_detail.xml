@@ -9,6 +9,7 @@
                   type="com.payback.pbpixabaykotlin.model.Hit"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/detail_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/black"
@@ -25,8 +26,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
-        <ImageView
-                android:id="@+id/detail_imageView"
+        <com.github.chrisbanes.photoview.PhotoView
+            android:id="@+id/detail_imageView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginBottom="8dp"
@@ -111,7 +112,7 @@
                 style="@style/TextViewStyle"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
-                android:text="@{`` + hit.tags}"
+                android:text="@{`` + hit.tags.replace(',','/')}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 tools:text="tag1, tag2, tag3"/>

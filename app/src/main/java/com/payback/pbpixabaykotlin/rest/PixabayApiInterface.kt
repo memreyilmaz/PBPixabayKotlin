@@ -10,5 +10,5 @@ interface PixabayApiInterface {
 
     @GET(KEY)
     fun getSearched (@Query("q") query: String,
-                     @Query("image_type") photo: String): Call<ImageResponse> ;
+                     @Query("image_type") photo: String): Call<ImageResponse>
 }

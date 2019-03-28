@@ -19,7 +19,7 @@ class ImageViewModel : ViewModel() {
     }
 
     fun loadImages(searchQuery : String) {
-        var apiService: PixabayApiInterface
+        val apiService: PixabayApiInterface
 
         apiService = PixabayApiClient.getClient().create()
 
@@ -28,7 +28,13 @@ class ImageViewModel : ViewModel() {
             override fun onResponse(call: Call<ImageResponse>, response: Response<ImageResponse>) {
                 Timber.i("Request Url: %s", call.request().url().toString());
                 Timber.i("Response code: %s", response.code());
+                if(response.raw().cacheResponse() != null){
+                    Timber.i("Response come from cache")
+                }
 
+                if(response.raw().networkResponse() != null){
+                    Timber.i("Response come from network")
+                }
                 images.value = response.body()?.hits
             }
             override fun onFailure(call: Call<ImageResponse>, t: Throwable) {

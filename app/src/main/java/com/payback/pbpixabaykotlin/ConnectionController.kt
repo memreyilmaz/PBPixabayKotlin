@@ -5,10 +5,13 @@ import android.net.ConnectivityManager
 
 object ConnectionController {
 
-    fun isInternetAvailable(context: Context): Boolean {
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
-        val activeNetwork = cm?.activeNetworkInfo
+    fun isInternetAvailable(context: Context): Boolean? {
+        var isConnected: Boolean? = false
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = connectivityManager.activeNetworkInfo
 
-        return activeNetwork != null && activeNetwork.isConnected
+        if (activeNetwork != null && activeNetwork.isConnected)
+            isConnected = true
+        return isConnected
     }
 }

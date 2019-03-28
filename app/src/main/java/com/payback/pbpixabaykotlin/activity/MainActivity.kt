@@ -22,7 +22,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-
     var searchQuery: String? = null
     lateinit var adapter : ImageAdapter
     lateinit var imageRecyclerView : RecyclerView
@@ -41,7 +40,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             imageViewModel.loadImages(getString(R.string.fruits))
         }
-
 
         imageViewModel.getImages().observe(this, Observer<List<Hit>> {images ->
             if (images.size != 0){
@@ -64,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
         retry_connection_check_button.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                if (ConnectionController.isInternetAvailable(this@MainActivity)){
+                if (ConnectionController.isInternetAvailable(this@MainActivity)!!){
                     val intent = getIntent()
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     finish()
@@ -88,7 +86,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun checkConnection(){
-        if (!ConnectionController.isInternetAvailable(this@MainActivity)){
+       if (!ConnectionController.isInternetAvailable(this@MainActivity)!!){
             imageRecyclerView.visibility = View.GONE
             error_empty_view.text = getString(R.string.no_connection)
             error_empty_view.visibility = View.VISIBLE

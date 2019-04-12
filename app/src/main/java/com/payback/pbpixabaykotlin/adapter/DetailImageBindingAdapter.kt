@@ -5,7 +5,7 @@ import androidx.databinding.BindingAdapter
 import com.payback.pbpixabaykotlin.R
 import com.squareup.picasso.Picasso
 
-object  DetailImageBindingAdapter {
+object DetailImageBindingAdapter {
 
     @JvmStatic
     @BindingAdapter("largeImageURL")

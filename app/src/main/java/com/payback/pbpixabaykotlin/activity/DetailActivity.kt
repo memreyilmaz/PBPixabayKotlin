@@ -1,18 +1,20 @@
 package com.payback.pbpixabaykotlin.activity
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
-import com.github.chrisbanes.photoview.OnViewTapListener
+import com.payback.pbpixabaykotlin.ImageSaver
+import com.payback.pbpixabaykotlin.R
 import com.payback.pbpixabaykotlin.SELECTED_IMAGE
 import com.payback.pbpixabaykotlin.databinding.ActivityDetailBinding
 import com.payback.pbpixabaykotlin.model.Hit
 import kotlinx.android.synthetic.main.activity_detail.*
-
 
 class DetailActivity : AppCompatActivity() {
 
@@ -27,18 +29,16 @@ class DetailActivity : AppCompatActivity() {
         setTitle(hit.user)
         setUi()
 
-        binding.detailImageView.setOnViewTapListener(object: OnViewTapListener{
-            override fun onViewTap(view: View?, x: Float, y: Float) {
-                when (detail_activity_toolbar.visibility) {
-                    View.VISIBLE -> setDetailsInvisible()
-                    View.GONE -> setDetailsVisible()}
-            }
-        })
+        binding.detailImageView.setOnViewTapListener { view, x, y ->
+            when (detail_activity_toolbar.visibility) {
+                View.VISIBLE -> setDetailsInvisible()
+                View.GONE -> setDetailsVisible()}
+        }
     }
 
     private fun setUi(){
         setSupportActionBar(detail_activity_toolbar)
-        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
       menuInflater.inflate(com.payback.pbpixabaykotlin.R.menu.activity_detail_action, menu)
@@ -48,6 +48,16 @@ class DetailActivity : AppCompatActivity() {
         when (item.itemId) {
             com.payback.pbpixabaykotlin.R.id.action_bar_share_icon -> {
                 shareCurrentImage()
+                return true
+            }
+            R.id.action_bar_download_icon ->{
+
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE),1)
+
+                val url = hit.largeImageURL
+                val imageName = hit.id.toString()
+                ImageSaver.saveImage(context = this, url = url, imageName = imageName)
                 return true
             }
         }

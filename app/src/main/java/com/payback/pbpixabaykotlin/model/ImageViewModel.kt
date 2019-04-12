@@ -8,26 +8,20 @@ import com.payback.pbpixabaykotlin.rest.PixabayApiInterface
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.create
 import timber.log.Timber
 
 class ImageViewModel : ViewModel() {
-    private var images: MutableLiveData<List<Hit>> = MutableLiveData()
-    val photo: String = "photo"
-    fun getImages(): LiveData<List<Hit>> {
-        return images
-    }
+    var images: MutableLiveData<List<Hit>> = MutableLiveData()
+    private val photo: String = "photo"
 
     fun loadImages(searchQuery : String) {
-        val apiService: PixabayApiInterface
-
-        apiService = PixabayApiClient.getClient().create()
+        val apiService: PixabayApiInterface = PixabayApiClient.getClient()
 
         val call = apiService.getSearched(searchQuery, photo)
         call.enqueue(object : Callback<ImageResponse> {
             override fun onResponse(call: Call<ImageResponse>, response: Response<ImageResponse>) {
-                Timber.i("Request Url: %s", call.request().url().toString());
-                Timber.i("Response code: %s", response.code());
+                Timber.i("Request Url: %s", call.request().url().toString())
+                Timber.i("Response code: %s", response.code())
                 if(response.raw().cacheResponse() != null){
                     Timber.i("Response come from cache")
                 }
@@ -41,5 +35,9 @@ class ImageViewModel : ViewModel() {
                 Timber.e(t.toString())
             }
         })
+    }
+
+    fun getImages(): LiveData<List<Hit>> {
+        return images
     }
 }

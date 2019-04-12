@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
 
 object PixabayApiClient {
 
-    fun getClient(): Retrofit {
+    fun getClient(): PixabayApiInterface {
         val cacheSize = (10 * 1024 * 1024).toLong()
         val httpCacheDirectory = File(BaseApplication.appContext?.cacheDir,"http-cache")
         val cache = Cache(httpCacheDirectory, cacheSize)
@@ -44,6 +44,6 @@ object PixabayApiClient {
             .addConverterFactory(GsonConverterFactory.create())
             .client(httpClient)
             .build()
-        return retrofit
+        return retrofit.create(PixabayApiInterface::class.java)
     }
 }

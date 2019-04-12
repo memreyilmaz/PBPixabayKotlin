@@ -11,7 +11,7 @@ import com.payback.pbpixabaykotlin.R
 import com.payback.pbpixabaykotlin.model.Hit
 import com.squareup.picasso.Picasso
 
-class ImageAdapter() : RecyclerView.Adapter<ImageAdapter.ImageAdapterViewHolder>() {
+class ImageAdapter : RecyclerView.Adapter<ImageAdapter.ImageAdapterViewHolder>() {
     lateinit var mContext : Context
     var mImages : List<Hit>? = null
     lateinit var mClickListener: ClickListener
@@ -65,6 +65,6 @@ class ImageAdapter() : RecyclerView.Adapter<ImageAdapter.ImageAdapterViewHolder>
     }
 
     interface ClickListener {
-        fun onItemClick(v: View, position: Int);
+        fun onItemClick(v: View, position: Int)
     }
 }

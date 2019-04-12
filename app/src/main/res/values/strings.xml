@@ -4,6 +4,7 @@
     <string name="dialog_yes">Yes</string>
     <string name="dialog_no">No</string>
     <string name="search">Search</string>
+    <string name="download">Download Image</string>
     <string name="share">Share</string>
     <string name="share_with">Share With</string>
     <string name="share_image_headline">Hello, I want to share this image from Pixabay with you;</string>

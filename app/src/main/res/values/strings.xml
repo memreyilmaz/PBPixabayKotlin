@@ -13,4 +13,6 @@
     <string name="retry">Retry</string>
     <string name="fruits">fruits</string>
     <string name="searchbar_hint">Search Images</string>
+    <string name="image_downloaded">Image Downloaded</string>
+    <string name="image_not_downloaded">Image Couldn\'t Downloaded</string>
 </resources>

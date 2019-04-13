@@ -6,20 +6,26 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
-import com.payback.pbpixabaykotlin.ImageSaver
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.payback.pbpixabaykotlin.R
 import com.payback.pbpixabaykotlin.SELECTED_IMAGE
 import com.payback.pbpixabaykotlin.databinding.ActivityDetailBinding
 import com.payback.pbpixabaykotlin.model.Hit
+import com.payback.pbpixabaykotlin.model.ImageViewModel
 import kotlinx.android.synthetic.main.activity_detail.*
 
 class DetailActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityDetailBinding
     lateinit var hit: Hit
+    val imageViewModel : ImageViewModel by lazy {
+        ViewModelProviders.of(this).get(ImageViewModel::class.java)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, com.payback.pbpixabaykotlin.R.layout.activity_detail)
@@ -57,7 +63,13 @@ class DetailActivity : AppCompatActivity() {
 
                 val url = hit.largeImageURL
                 val imageName = hit.id.toString()
-                ImageSaver.saveImage(context = this, url = url, imageName = imageName)
+                imageViewModel.saveImage(url, imageName)
+                imageViewModel.downloadstatus.observe(this, Observer {
+                    when(it){
+                       true -> Toast.makeText(getApplication(), R.string.image_downloaded, Toast.LENGTH_SHORT).show()
+                       false -> Toast.makeText(getApplication(), R.string.image_not_downloaded, Toast.LENGTH_SHORT).show()
+                    }
+                })
                 return true
             }
         }

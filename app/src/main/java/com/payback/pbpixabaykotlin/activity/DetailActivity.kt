@@ -2,6 +2,7 @@ package com.payback.pbpixabaykotlin.activity
 
 import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -9,14 +10,17 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.payback.pbpixabaykotlin.R
 import com.payback.pbpixabaykotlin.SELECTED_IMAGE
 import com.payback.pbpixabaykotlin.databinding.ActivityDetailBinding
 import com.payback.pbpixabaykotlin.model.Hit
 import com.payback.pbpixabaykotlin.model.ImageViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_detail.*
 
 class DetailActivity : AppCompatActivity() {
@@ -28,7 +32,7 @@ class DetailActivity : AppCompatActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, com.payback.pbpixabaykotlin.R.layout.activity_detail)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_detail)
         val detailIntent = intent
         hit = detailIntent.getParcelableExtra(SELECTED_IMAGE)
         binding.hit = hit
@@ -47,29 +51,44 @@ class DetailActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-      menuInflater.inflate(com.payback.pbpixabaykotlin.R.menu.activity_detail_action, menu)
+      menuInflater.inflate(R.menu.activity_detail_action, menu)
       return true
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            com.payback.pbpixabaykotlin.R.id.action_bar_share_icon -> {
+            R.id.action_bar_share_icon -> {
                 shareCurrentImage()
                 return true
             }
             R.id.action_bar_download_icon ->{
-
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE),1)
-
+                if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(
+                        this, arrayOf(
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                        ), 1
+                    )
+                }
                 val url = hit.largeImageURL
                 val imageName = hit.id.toString()
-                imageViewModel.saveImage(url, imageName)
+                imageViewModel.downloadImage(detail_imageView,imageName)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeBy (
+                        onSuccess = { file ->
+                            Toast.makeText(this, "$file saved", Toast.LENGTH_SHORT).show()
+                        },
+                        onError = { e ->
+                            Toast.makeText(this, "Error saving file :${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+                        }                    )
+                /*imageViewModel.saveImage(url, imageName)
                 imageViewModel.downloadstatus.observe(this, Observer {
                     when(it){
-                       true -> Toast.makeText(getApplication(), R.string.image_downloaded, Toast.LENGTH_SHORT).show()
-                       false -> Toast.makeText(getApplication(), R.string.image_not_downloaded, Toast.LENGTH_SHORT).show()
+                       true -> Snackbar.make(detail_layout, R.string.image_downloaded, Snackbar.LENGTH_LONG).show()
+                       false -> Snackbar.make(detail_layout, R.string.image_not_downloaded, Snackbar.LENGTH_LONG).show()
                     }
-                })
+                })*/
                 return true
             }
         }

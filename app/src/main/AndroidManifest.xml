@@ -15,12 +15,7 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".activity.DetailActivity">
-            <meta-data
-                    android:name="android.support.PARENT_ACTIVITY"
-                    android:value="com.payback.pbpixabaykotlin.activity.MainActivity" />
-        </activity>
-        <activity android:name=".activity.MainActivity"
+        <activity android:name=".ui.MainActivity"
                   android:launchMode="singleTop"
                   android:theme="@style/AppTheme">
             <intent-filter>

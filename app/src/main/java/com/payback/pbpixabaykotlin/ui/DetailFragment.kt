@@ -1,59 +1,75 @@
-package com.payback.pbpixabaykotlin.activity
+package com.payback.pbpixabaykotlin.ui
 
-import android.Manifest
+
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.payback.pbpixabaykotlin.R
-import com.payback.pbpixabaykotlin.SELECTED_IMAGE
-import com.payback.pbpixabaykotlin.databinding.ActivityDetailBinding
+import com.payback.pbpixabaykotlin.databinding.FragmentDetailBinding
 import com.payback.pbpixabaykotlin.model.Hit
-import com.payback.pbpixabaykotlin.model.ImageViewModel
+import com.payback.pbpixabaykotlin.model.SharedViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_detail.*
+import kotlinx.android.synthetic.main.fragment_detail.*
 
-class DetailActivity : AppCompatActivity() {
+class DetailFragment : Fragment() {
+    lateinit var binding: FragmentDetailBinding
+    lateinit var bhit: Hit
+    private lateinit var model: SharedViewModel
 
-    lateinit var binding: ActivityDetailBinding
-    lateinit var hit: Hit
-    val imageViewModel : ImageViewModel by lazy {
-        ViewModelProviders.of(this).get(ImageViewModel::class.java)
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_detail)
-        val detailIntent = intent
-        hit = detailIntent.getParcelableExtra(SELECTED_IMAGE)
-        binding.hit = hit
-        setTitle(hit.user)
-        setUi()
+        model = activity?.run {
+            ViewModelProviders.of(this).get(SharedViewModel::class.java)
+        } ?: throw Exception("Invalid Activity")
+
+        model.selectedImage.observe(this, Observer<Hit> {
+            //if (it == null) {
+            bhit = it
+            (activity as AppCompatActivity).supportActionBar?.title = bhit.user
+            binding.hit = bhit
+
+           // }
+        })
+    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
+
+        binding = DataBindingUtil.inflate(inflater,R.layout.fragment_detail, container, false)
+        // binding.hit = bhit
+        setHasOptionsMenu(true)
 
         binding.detailImageView.setOnViewTapListener { view, x, y ->
-            when (detail_activity_toolbar.visibility) {
+            when (likes_icon.visibility) {
                 View.VISIBLE -> setDetailsInvisible()
                 View.GONE -> setDetailsVisible()}
         }
+        return binding.root
     }
 
-    private fun setUi(){
-        setSupportActionBar(detail_activity_toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    private fun shareCurrentImage() {
+        val shareStringBuilder = StringBuilder()
+        shareStringBuilder.append(getString(R.string.share_image_headline))
+            .append("\n")
+            .append(bhit.pageURL)
+
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareStringBuilder.toString())
+        shareIntent.type = "text/plain"
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
     }
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-      menuInflater.inflate(R.menu.activity_detail_action, menu)
-      return true
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_detail_action, menu)
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_bar_share_icon -> {
@@ -61,7 +77,7 @@ class DetailActivity : AppCompatActivity() {
                 return true
             }
             R.id.action_bar_download_icon ->{
-                if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                /*if (ContextCompat.checkSelfPermission(context(),
                         Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(
                         this, arrayOf(
@@ -69,21 +85,21 @@ class DetailActivity : AppCompatActivity() {
                             Manifest.permission.READ_EXTERNAL_STORAGE
                         ), 1
                     )
-                }
-                val url = hit.largeImageURL
-                val imageName = hit.id.toString()
-                imageViewModel.downloadImage(detail_imageView,imageName)
+                }*/
+              //  val url = bhit.largeImageURL
+                val imageName = bhit.id.toString()
+                model.downloadImage(detail_imageView,imageName)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy (
                         onSuccess = { file ->
-                            Toast.makeText(this, "$file saved", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "$file saved", Toast.LENGTH_SHORT).show()
                         },
                         onError = { e ->
-                            Toast.makeText(this, "Error saving file :${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Error saving file :${e.localizedMessage}", Toast.LENGTH_SHORT).show()
                         }                    )
-                /*imageViewModel.saveImage(url, imageName)
-                imageViewModel.downloadstatus.observe(this, Observer {
+                /*sharedViewModel.saveImage(url, imageName)
+                sharedViewModel.downloadstatus.observe(this, Observer {
                     when(it){
                        true -> Snackbar.make(detail_layout, R.string.image_downloaded, Snackbar.LENGTH_LONG).show()
                        false -> Snackbar.make(detail_layout, R.string.image_not_downloaded, Snackbar.LENGTH_LONG).show()
@@ -94,20 +110,9 @@ class DetailActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-    private fun shareCurrentImage() {
-        val shareStringBuilder = StringBuilder()
-        shareStringBuilder.append(getString(com.payback.pbpixabaykotlin.R.string.share_image_headline))
-                            .append("\n")
-                            .append(hit.pageURL)
-
-        val shareIntent = Intent(Intent.ACTION_SEND)
-        shareIntent.putExtra(Intent.EXTRA_TEXT, shareStringBuilder.toString())
-        shareIntent.type = "text/plain"
-        startActivity(Intent.createChooser(shareIntent, getString(com.payback.pbpixabaykotlin.R.string.share_with)))
-    }
 
     private fun setDetailsVisible(){
-        binding.detailActivityToolbar.visibility = View.VISIBLE
+        //(activity as AppCompatActivity).supportActionBar?.show()
         binding.likesIcon.visibility = View.VISIBLE
         binding.imageLikesTextView.visibility = View.VISIBLE
         binding.favouritesIcon.visibility = View.VISIBLE
@@ -118,7 +123,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun setDetailsInvisible(){
-        binding.detailActivityToolbar.visibility = View.GONE
+        //(activity as AppCompatActivity).supportActionBar?.hide()
         binding.likesIcon.visibility = View.GONE
         binding.imageLikesTextView.visibility = View.GONE
         binding.favouritesIcon.visibility = View.GONE

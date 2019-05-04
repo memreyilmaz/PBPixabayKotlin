@@ -5,6 +5,7 @@
         xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable name="hit"
                   type="com.payback.pbpixabaykotlin.model.Hit"/>
     </data>
@@ -13,28 +14,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/black"
-            tools:mContext=".activity.DetailActivity">
+            tools:mContext=".DetailFragment">
 
-
-        <androidx.appcompat.widget.Toolbar
-                android:id="@+id/detail_activity_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="?attr/actionBarSize"
-                android:theme="@style/ToolbarStyle"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
 
         <com.github.chrisbanes.photoview.PhotoView
-            android:id="@+id/detail_imageView"
+                android:id="@+id/detail_imageView"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginBottom="8dp"
-                app:largeImageURL="@{hit.largeImageURL}"
-                android:layout_marginTop="?attr/actionBarSize"
+                android:layout_height="match_parent"
                 android:scaleType="fitCenter"
-                app:layout_constraintBottom_toTopOf="@+id/image_favourites_textView"
+                app:largeImageURL="@{hit.largeImageURL}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
@@ -43,23 +31,23 @@
                 android:id="@+id/likes_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:src="@drawable/ic_thumb_up"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/image_tags_textView"
                 app:layout_constraintEnd_toStartOf="@+id/image_likes_textView"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
                 android:id="@+id/image_likes_textView"
                 style="@style/TextViewStyle"
-                android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="4dp"
                 android:text="@{`` + hit.likes}"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/image_tags_textView"
                 app:layout_constraintEnd_toStartOf="@+id/favourites_icon"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/likes_icon"
                 tools:text="123"/>
 
@@ -68,21 +56,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:src="@drawable/ic_favorite_border"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/image_tags_textView"
                 app:layout_constraintEnd_toStartOf="@+id/image_favourites_textView"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/image_likes_textView"/>
 
         <TextView
                 android:id="@+id/image_favourites_textView"
                 style="@style/TextViewStyle"
-                android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="4dp"
                 android:text="@{`` + hit.favorites}"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/image_tags_textView"
                 app:layout_constraintEnd_toStartOf="@+id/comments_icon"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/favourites_icon"
                 tools:text="456"/>
 
@@ -91,30 +80,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:src="@drawable/ic_chat_bubble_outline"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/image_tags_textView"
                 app:layout_constraintEnd_toStartOf="@+id/image_comments_textView"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/image_favourites_textView"/>
 
         <TextView
                 android:id="@+id/image_comments_textView"
                 style="@style/TextViewStyle"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="4dp"
                 android:text="@{`` + hit.comments}"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/image_tags_textView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/comments_icon"
                 tools:text="789"/>
 
         <TextView
                 android:id="@+id/image_tags_textView"
                 style="@style/TextViewStyle"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="16dp"
                 android:text="@{`` + hit.tags.replace(',','/')}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 tools:text="tag1, tag2, tag3"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

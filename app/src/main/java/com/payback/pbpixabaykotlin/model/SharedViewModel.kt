@@ -25,9 +25,17 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 
-class ImageViewModel(application: Application) : AndroidViewModel(application) {
+class SharedViewModel(application: Application) : AndroidViewModel(application) {
         var downloadstatus = MutableLiveData<Boolean?>()
         var images: MutableLiveData<List<Hit>> = MutableLiveData()
+        //var selectedImage: MutableLiveData<Hit> = MutableLiveData()
+        //lateinit var selectedImage: Hit
+
+    val selectedImage = MutableLiveData<Hit>()
+    fun setSelectedImage(hit: Hit) {
+        //selectedImage.value = hit
+        selectedImage.value = hit
+    }
 
     private val subscriptions = CompositeDisposable()
 

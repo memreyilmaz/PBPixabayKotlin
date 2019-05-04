@@ -11,9 +11,9 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.payback.pbpixabaykotlin.R
 import com.payback.pbpixabaykotlin.SEARCH_QUERY
-import com.payback.pbpixabaykotlin.adapter.ImageAdapter
 import com.payback.pbpixabaykotlin.model.Hit
 import com.payback.pbpixabaykotlin.model.SharedViewModel
+import com.payback.pbpixabaykotlin.ui.adapter.ImageAdapter
 import kotlinx.android.synthetic.main.fragment_list.*
 
 class ListFragment : Fragment() {

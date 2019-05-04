@@ -34,6 +34,8 @@ class DetailFragment : Fragment() {
             //if (it == null) {
             bhit = it
             (activity as AppCompatActivity).supportActionBar?.title = bhit.user
+
+
             binding.hit = bhit
 
            // }
@@ -112,7 +114,7 @@ class DetailFragment : Fragment() {
     }
 
     private fun setDetailsVisible(){
-        //(activity as AppCompatActivity).supportActionBar?.show()
+        (activity as AppCompatActivity).supportActionBar?.show()
         binding.likesIcon.visibility = View.VISIBLE
         binding.imageLikesTextView.visibility = View.VISIBLE
         binding.favouritesIcon.visibility = View.VISIBLE
@@ -123,7 +125,7 @@ class DetailFragment : Fragment() {
     }
 
     private fun setDetailsInvisible(){
-        //(activity as AppCompatActivity).supportActionBar?.hide()
+        (activity as AppCompatActivity).supportActionBar?.hide()
         binding.likesIcon.visibility = View.GONE
         binding.imageLikesTextView.visibility = View.GONE
         binding.favouritesIcon.visibility = View.GONE

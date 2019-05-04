@@ -1,4 +1,4 @@
-package com.payback.pbpixabaykotlin.rest
+package com.payback.pbpixabaykotlin.model.rest
 
 import com.payback.pbpixabaykotlin.KEY
 import com.payback.pbpixabaykotlin.model.ImageResponse

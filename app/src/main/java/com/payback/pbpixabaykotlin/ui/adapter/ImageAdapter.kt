@@ -1,4 +1,4 @@
-package com.payback.pbpixabaykotlin.adapter
+package com.payback.pbpixabaykotlin.ui.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -36,12 +36,12 @@ class ImageAdapter : RecyclerView.Adapter<ImageAdapter.ImageAdapterViewHolder>()
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageAdapter.ImageAdapterViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageAdapterViewHolder {
         mContext = parent.context
         val view : View = LayoutInflater.from(mContext).inflate(R.layout.image_item, parent, false)
         return ImageAdapterViewHolder(view)
     }
-    override fun onBindViewHolder(holder: ImageAdapter.ImageAdapterViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ImageAdapterViewHolder, position: Int) {
         val hit: Hit? = mImages?.get(position)
         holder.userNameTextView.text = hit?.user
         holder.tagsTextView.text = hit?.tags?.replace(","," /")

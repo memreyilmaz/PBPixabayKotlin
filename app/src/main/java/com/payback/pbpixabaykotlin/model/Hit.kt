@@ -1,11 +1,8 @@
 package com.payback.pbpixabaykotlin.model
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
-    data class Hit (
+data class Hit (
     @SerializedName("largeImageURL")
     val largeImageURL: String,
     @SerializedName("likes")
@@ -23,4 +20,4 @@ import kotlinx.android.parcel.Parcelize
     val favorites: Int,
     @SerializedName("previewURL")
     val previewURL: String
-): Parcelable
+)

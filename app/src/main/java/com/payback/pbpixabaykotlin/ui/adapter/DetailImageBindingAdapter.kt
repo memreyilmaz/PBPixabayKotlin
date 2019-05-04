@@ -1,4 +1,4 @@
-package com.payback.pbpixabaykotlin.adapter
+package com.payback.pbpixabaykotlin.ui.adapter
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter

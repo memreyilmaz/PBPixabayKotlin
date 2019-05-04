@@ -10,8 +10,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.payback.pbpixabaykotlin.APP_NAME
-import com.payback.pbpixabaykotlin.rest.PixabayApiClient
-import com.payback.pbpixabaykotlin.rest.PixabayApiInterface
+import com.payback.pbpixabaykotlin.model.rest.PixabayApiClient
+import com.payback.pbpixabaykotlin.model.rest.PixabayApiInterface
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import io.reactivex.Single

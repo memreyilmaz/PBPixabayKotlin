@@ -1,4 +1,4 @@
-package com.payback.pbpixabaykotlin.rest
+package com.payback.pbpixabaykotlin.model.rest
 
 import com.payback.pbpixabaykotlin.BASE_URL
 import com.payback.pbpixabaykotlin.timber.BaseApplication

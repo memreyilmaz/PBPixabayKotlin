@@ -1,4 +1,4 @@
-package com.payback.pbpixabaykotlin
+package com.android.pixabay
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4

@@ -1,4 +1,4 @@
-package com.payback.pbpixabaykotlin
+package com.android.pixabay
 
 import android.content.Context
 import android.net.ConnectivityManager

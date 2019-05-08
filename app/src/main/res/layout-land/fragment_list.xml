@@ -18,17 +18,17 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
-    <TextView
-            android:id="@+id/error_empty_view"
-            style="@style/EmptyTextViewStyle"
-            android:padding="@dimen/padding_16"
-            android:layout_gravity="center|center_horizontal"
-            android:visibility="gone"/>
+    <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
 
-    <Button
-            android:id="@+id/retry_connection_check_button"
-            style="@style/ButtonStyle"
-            android:visibility="gone"
-            android:text="@string/retry"/>
+    <TextView
+            android:id="@+id/txt_error"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="ERROR !! Tap to retry." />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

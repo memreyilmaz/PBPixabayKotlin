@@ -1,4 +1,4 @@
-package com.payback.pbpixabaykotlin.model
+package com.android.pixabay.model
 
 import com.google.gson.annotations.SerializedName
 

@@ -1,4 +1,4 @@
-package com.payback.pbpixabaykotlin.ui
+package com.android.pixabay.ui
 
 
 import android.content.Intent
@@ -10,10 +10,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.payback.pbpixabaykotlin.R
-import com.payback.pbpixabaykotlin.databinding.FragmentDetailBinding
-import com.payback.pbpixabaykotlin.model.Hit
-import com.payback.pbpixabaykotlin.model.SharedViewModel
+import com.android.pixabay.R
+import com.android.pixabay.databinding.FragmentDetailBinding
+import com.android.pixabay.model.Hit
+import com.android.pixabay.model.SharedViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
@@ -22,22 +22,19 @@ import kotlinx.android.synthetic.main.fragment_detail.*
 class DetailFragment : Fragment() {
     lateinit var binding: FragmentDetailBinding
     lateinit var bhit: Hit
-    private lateinit var model: SharedViewModel
+    private lateinit var viewModel: SharedViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        model = activity?.run {
+        viewModel = activity?.run {
             ViewModelProviders.of(this).get(SharedViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
-        model.selectedImage.observe(this, Observer<Hit> {
+        viewModel.selectedImage.observe(this, Observer<Hit> {
             //if (it == null) {
             bhit = it
             (activity as AppCompatActivity).supportActionBar?.title = bhit.user
-
-
             binding.hit = bhit
-
            // }
         })
     }
@@ -90,7 +87,7 @@ class DetailFragment : Fragment() {
                 }*/
               //  val url = bhit.largeImageURL
                 val imageName = bhit.id.toString()
-                model.downloadImage(detail_imageView,imageName)
+                viewModel.downloadImage(detail_imageView,imageName)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy (
@@ -99,14 +96,9 @@ class DetailFragment : Fragment() {
                         },
                         onError = { e ->
                             Toast.makeText(context, "Error saving file :${e.localizedMessage}", Toast.LENGTH_SHORT).show()
-                        }                    )
-                /*sharedViewModel.saveImage(url, imageName)
-                sharedViewModel.downloadstatus.observe(this, Observer {
-                    when(it){
-                       true -> Snackbar.make(detail_layout, R.string.image_downloaded, Snackbar.LENGTH_LONG).show()
-                       false -> Snackbar.make(detail_layout, R.string.image_not_downloaded, Snackbar.LENGTH_LONG).show()
-                    }
-                })*/
+                        }
+                    )
+
                 return true
             }
         }

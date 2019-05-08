@@ -1,4 +1,4 @@
-package com.payback.pbpixabaykotlin.timber
+package com.android.pixabay.timber
 
 import android.app.Application
 import android.content.Context

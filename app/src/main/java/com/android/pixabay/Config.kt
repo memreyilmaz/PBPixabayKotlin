@@ -1,4 +1,4 @@
-package com.payback.pbpixabaykotlin
+package com.android.pixabay
 
 const val BASE_URL = "https://pixabay.com/api/"
 const val SEARCH_QUERY = "search_query"

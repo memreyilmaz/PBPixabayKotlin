@@ -1,10 +1,10 @@
-package com.payback.pbpixabaykotlin.ui
+package com.android.pixabay.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
-import com.payback.pbpixabaykotlin.R
+import com.android.pixabay.R
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {

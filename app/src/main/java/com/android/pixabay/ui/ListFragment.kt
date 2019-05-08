@@ -1,31 +1,33 @@
-package com.payback.pbpixabaykotlin.ui
+package com.android.pixabay.ui
 
 
 import android.os.Bundle
 import android.view.*
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.payback.pbpixabaykotlin.R
-import com.payback.pbpixabaykotlin.SEARCH_QUERY
-import com.payback.pbpixabaykotlin.model.Hit
-import com.payback.pbpixabaykotlin.model.SharedViewModel
-import com.payback.pbpixabaykotlin.ui.adapter.ImageAdapter
-import kotlinx.android.synthetic.main.fragment_list.*
+import com.android.pixabay.R
+import com.android.pixabay.State
+import com.android.pixabay.model.SharedViewModel
+import com.android.pixabay.ui.adapter.ImageAdapter
 
 class ListFragment : Fragment() {
     var searchQuery: String? = null
-    lateinit var adapter : ImageAdapter
     lateinit var imageRecyclerView : RecyclerView
-    private lateinit var model: SharedViewModel
+    lateinit var errorTextView : TextView
+    lateinit var progressBar : ProgressBar
+    private lateinit var viewModel: SharedViewModel
+    private lateinit var imagesListAdapter: ImageAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        model = activity?.run {
+        viewModel = activity?.run {
             ViewModelProviders.of(this).get(SharedViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
     }
@@ -33,25 +35,24 @@ class ListFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_list, container, false)
         setHasOptionsMenu(true)
-
-        //  setUi()
-        //setRecyclerView()
         imageRecyclerView = view.findViewById(R.id.image) as RecyclerView
-        imageRecyclerView.setHasFixedSize(true)
-        adapter = ImageAdapter()
-        imageRecyclerView.adapter = adapter
+        progressBar = view.findViewById(R.id.progress_bar) as ProgressBar
+        errorTextView = view.findViewById(R.id.txt_error) as TextView
 
-        adapter.setOnItemClickListener(object : ImageAdapter.ClickListener{
+        initAdapter()
+        initState()
+        //  setUi()
+  /*   adapter.setOnItemClickListener(object : OldImageAdapter.ClickListener{
             override fun onItemClick(v: View, position: Int) {
                 model.setSelectedImage(adapter.getHitAtPosition(position)!!)
                 v.findNavController().navigate(R.id.action_listFragment_to_detailFragment)
             }
-        })
-        //checkConnection()
+        })*/
+       /* //checkConnection()
         if (savedInstanceState != null) {
             searchQuery = savedInstanceState.getString(SEARCH_QUERY)
         } else {
-            model.loadImages(getString(com.payback.pbpixabaykotlin.R.string.fruits))
+            model.loadImages(getString(R.string.fruits))
         }
         model.images.observe(this, Observer<List<Hit>> { images ->
             if (images.isNotEmpty()){
@@ -62,16 +63,14 @@ class ListFragment : Fragment() {
                     imageRecyclerView.visibility = View.VISIBLE
                 }
             } else {
-                val noResults: String = getString(com.payback.pbpixabaykotlin.R.string.no_results, searchQuery)
+                val noResults: String = getString(R.string.no_results, searchQuery)
                 error_empty_view.text = noResults
                 error_empty_view.visibility = View.VISIBLE
                 imageRecyclerView.visibility = View.GONE
             }
-        })
-
+        })*/
         return view
     }
-
     /*fun setUi(){
         /*  retry_connection_check_button.setOnClickListener {
               if (ConnectionController.isInternetAvailable(this@MainActivity)!!){
@@ -84,29 +83,12 @@ class ListFragment : Fragment() {
           }*/
     }*/
 
-    /*fun setRecyclerView(){
-            imageRecyclerView = view!!.findViewById(R.id.image) as RecyclerView
-            imageRecyclerView.setHasFixedSize(true)
-            adapter = ImageAdapter()
-            imageRecyclerView.adapter = adapter
-
-        adapter.setOnItemClickListener(object : ImageAdapter.ClickListener{
-            override fun onItemClick(v: View, position: Int) {
-              //  showDetailActivity(position)
-            }
-        })
-    }*/
-
    /* private fun checkConnection(){
         if (!ConnectionController.isInternetAvailable(activity)!!){
             imageRecyclerView.visibility = View.GONE
-            //binding.image.visibility = View.GONE
             error_empty_view.text = getString(R.string.no_connection)
-            //binding.errorEmptyView.text = getString(R.string.no_connection)
             error_empty_view.visibility = View.VISIBLE
-            //binding.errorEmptyView.visibility = View.VISIBLE
             retry_connection_check_button.visibility = View.VISIBLE
-            //binding.retryConnectionCheckButton.visibility = View.VISIBLE
         }
     }*/
 
@@ -120,14 +102,12 @@ class ListFragment : Fragment() {
             R.id.action_bar_search_icon ->{
                 val searchItem = item
                 val searchView = searchItem.actionView as SearchView
-                searchView.queryHint = getString(com.payback.pbpixabaykotlin.R.string.searchbar_hint)
-
+                searchView.queryHint = getString(R.string.searchbar_hint)
                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-
                     override fun onQueryTextSubmit(query: String): Boolean {
                         searchItem.collapseActionView()
                         searchQuery = query
-                        model.loadImages(searchQuery!!)
+                       // model.loadImages(searchQuery!!)
                         return true
                     }
 
@@ -136,8 +116,33 @@ class ListFragment : Fragment() {
                     }
                 })
             }
-
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun initAdapter() {
+        imagesListAdapter = ImageAdapter { viewModel.retry() }
+        imageRecyclerView.adapter = imagesListAdapter
+        viewModel.imagesList.observe(this, Observer {
+            imagesListAdapter.submitList(it)
+        })
+
+        imagesListAdapter.setOnItemClickListener(object: ImageAdapter.OnItemClickListener{
+            override fun onItemClick(v: View, pos: Int) {
+                viewModel.setSelectedImage(imagesListAdapter.getHitAtPosition(pos)!!)
+                view?.findNavController()?.navigate(R.id.action_listFragment_to_detailFragment)
+            }
+        })
+    }
+
+    private fun initState() {
+        errorTextView.setOnClickListener { viewModel.retry() }
+        viewModel.getState().observe(this, Observer { state ->
+            progressBar.visibility = if (viewModel.listIsEmpty() && state == State.LOADING) View.VISIBLE else View.GONE
+            errorTextView.visibility = if (viewModel.listIsEmpty() && state == State.ERROR) View.VISIBLE else View.GONE
+            if (!viewModel.listIsEmpty()) {
+                imagesListAdapter.setState(state ?: State.DONE)
+            }
+        })
     }
 }

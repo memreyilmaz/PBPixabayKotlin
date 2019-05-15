@@ -6,6 +6,10 @@ Android Application on Kotlin to show images by using Pixabay Api
 
 List of libraries used in the project
 
+[RxJava](https://github.com/ReactiveX/RxJava) - Reactive Extensions for the JVM – a library for composing asynchronous and event-based programs using observable sequences for the Java VM.
+
+[Paging](https://developer.android.com/topic/libraries/architecture/paging) - The Paging Library helps you load and display small chunks of data at a time. Loading partial data on demand reduces usage of network bandwidth and system resources.
+
 [Data Binding](https://developer.android.com/topic/libraries/data-binding/#java) - The Data Binding Library is a support library that allows you to bind UI components in your layouts to data sources in your app using a declarative format rather than programmatically.
 
 [Retrofit](https://square.github.io/retrofit/) - A type-safe REST client for Android and Java.

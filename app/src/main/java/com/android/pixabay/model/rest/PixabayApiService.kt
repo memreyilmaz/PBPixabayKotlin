@@ -21,17 +21,13 @@ import java.util.concurrent.TimeUnit
 interface PixabayApiService {
 
     @GET(KEY)
-    fun getSearchedbyPaging (@Query("q") query: String,
-                             @Query("page") page: Int,
-                             @Query("image_type") photo: String): Single<ImageResponse>
+    fun getSearch (@Query("q") query: String,
+                   @Query("page") page: Int): Single<ImageResponse>
 
     companion object {
         val cacheSize = (10 * 1024 * 1024).toLong()
         val httpCacheDirectory = File(BaseApplication.appContext?.cacheDir,"http-cache")
-        val cache = Cache(
-            httpCacheDirectory,
-            cacheSize
-        )
+        val cache = Cache(httpCacheDirectory, cacheSize)
         val loggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS)
 
         val networkCacheInterceptor = Interceptor { chain ->
@@ -62,5 +58,4 @@ interface PixabayApiService {
             return retrofit.create(PixabayApiService::class.java)
         }
     }
-
 }

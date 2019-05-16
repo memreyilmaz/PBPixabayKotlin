@@ -1,100 +1,56 @@
 package com.android.pixabay.model
 
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.os.Environment
 import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
-import com.android.pixabay.APP_NAME
+import com.android.pixabay.PixabayRepository
 import com.android.pixabay.State
-import com.android.pixabay.model.paging.ImageDataSource
-import com.android.pixabay.model.paging.ImageDataSourceFactory
-import com.android.pixabay.model.rest.PixabayApiService
-import io.reactivex.Single
-import io.reactivex.disposables.CompositeDisposable
-import timber.log.Timber
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 
-class SharedViewModel : ViewModel(){
+class SharedViewModel(private val repository: PixabayRepository): ViewModel(){
 
-    private val networkService = PixabayApiService.getService()
-    var imagesList: LiveData<PagedList<Hit>>
     val selectedImage = MutableLiveData<Hit>()
-    private val subscriptions = CompositeDisposable()
-    private val pageSize = 20
-    private val imagesDataSourceFactory: ImageDataSourceFactory
+    val downloadResult = MutableLiveData<String>()
+    private val queryLiveData = MutableLiveData<String>()
 
-    init {
-        imagesDataSourceFactory = ImageDataSourceFactory(subscriptions, networkService)
-        val config = PagedList.Config.Builder()
-            .setPageSize(pageSize)
-            .setInitialLoadSizeHint(pageSize)
-            .setEnablePlaceholders(false)
-            .build()
-        imagesList = LivePagedListBuilder<Int, Hit>(imagesDataSourceFactory, config).build()
+    val imageslist = Transformations.switchMap(queryLiveData){
+        repository.search(it)
     }
+
+    fun setQuery(query: String) {
+        queryLiveData.postValue(query)
+    }
+    fun lastQueryValue(): String? = queryLiveData.value
+
     fun setSelectedImage(hit: Hit) {
         selectedImage.value = hit
     }
 
-    fun downloadImage(imageView: ImageView, imageName: String): Single<String> {
-        return Single.create { observer ->
-            val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).absolutePath + "/" + APP_NAME
-            try {
-                val file = File(path, imageName + ".jpg")
-                file.parentFile.mkdir()
-                var stream = FileOutputStream(file)
-                val bitmap = (imageView.drawable as BitmapDrawable).bitmap
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                stream.close()
-                observer.onSuccess("down")
-                Timber.i("file created")
-            }catch (e: IOException) {
-                observer.onError(e)
-                Timber.e("couldnt create file")
-            }
-        }
+    fun downloadImage(imageView: ImageView, imageName: String) {
+        repository.downloadImage(imageView,imageName)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy (
+                onComplete = {
+                    downloadResult.value = "File Saved"
+                },
+                onError = { e ->
+                    downloadResult.value = "Error saving file :${e.localizedMessage}"
+                }
+            )
     }
 
-    fun getState(): LiveData<State> = Transformations.switchMap<ImageDataSource,
-            State>(imagesDataSourceFactory.sourceLiveData, ImageDataSource::state)
-
+    fun getState(): LiveData<State> {
+        return repository.getState()
+    }
     fun retry() {
-        imagesDataSourceFactory.sourceLiveData.value?.retry()
+        repository.retry()
     }
-
     fun listIsEmpty(): Boolean {
-        return imagesList.value?.isEmpty() ?: true
+        return repository.listIsEmpty()
     }
-
-    override fun onCleared() {
-        super.onCleared()
-        subscriptions.dispose()
-    }
-
-
-    /*val call = apiService.getSearched(searchQuery, photo)
-call.enqueue(object : Callback<ImageResponse> {
-    override fun onResponse(call: Call<ImageResponse>, response: Response<ImageResponse>) {
-        Timber.i("Request Url: %s", call.request().url().toString())
-        Timber.i("Response code: %s", response.code())
-        if(response.raw().cacheResponse() != null){
-            Timber.i("Response come from cache")
-        }
-        if(response.raw().networkResponse() != null){
-            Timber.i("Response come from network")
-        }
-        images.value = response.body()?.hits
-    }
-    override fun onFailure(call: Call<ImageResponse>, t: Throwable) {
-        Timber.e(t.toString())
-    }
-})*/
 }

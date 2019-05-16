@@ -11,13 +11,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.android.pixabay.R
-import com.android.pixabay.State
+import com.android.pixabay.*
 import com.android.pixabay.model.SharedViewModel
 import com.android.pixabay.ui.adapter.ImageAdapter
 
 class ListFragment : Fragment() {
-    var searchQuery: String? = null
     lateinit var imageRecyclerView : RecyclerView
     lateinit var errorTextView : TextView
     lateinit var progressBar : ProgressBar
@@ -28,7 +26,7 @@ class ListFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         viewModel = activity?.run {
-            ViewModelProviders.of(this).get(SharedViewModel::class.java)
+            ViewModelProviders.of(this, Injection.provideViewModelFactory()).get(SharedViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
     }
 
@@ -38,37 +36,14 @@ class ListFragment : Fragment() {
         imageRecyclerView = view.findViewById(R.id.image) as RecyclerView
         progressBar = view.findViewById(R.id.progress_bar) as ProgressBar
         errorTextView = view.findViewById(R.id.txt_error) as TextView
-
+        val query = savedInstanceState?.getString(LAST_SEARCH_QUERY) ?: DEFAULT_SEARCH_QUERY
+        viewModel.setQuery(query)
         initAdapter()
-        initState()
+        //initState()
+
         //  setUi()
-  /*   adapter.setOnItemClickListener(object : OldImageAdapter.ClickListener{
-            override fun onItemClick(v: View, position: Int) {
-                model.setSelectedImage(adapter.getHitAtPosition(position)!!)
-                v.findNavController().navigate(R.id.action_listFragment_to_detailFragment)
-            }
-        })*/
-       /* //checkConnection()
-        if (savedInstanceState != null) {
-            searchQuery = savedInstanceState.getString(SEARCH_QUERY)
-        } else {
-            model.loadImages(getString(R.string.fruits))
-        }
-        model.images.observe(this, Observer<List<Hit>> { images ->
-            if (images.isNotEmpty()){
-                adapter.setImageData(images)
-                adapter.notifyDataSetChanged()
-                if (error_empty_view.isShown()){
-                    error_empty_view.visibility = View.GONE
-                    imageRecyclerView.visibility = View.VISIBLE
-                }
-            } else {
-                val noResults: String = getString(R.string.no_results, searchQuery)
-                error_empty_view.text = noResults
-                error_empty_view.visibility = View.VISIBLE
-                imageRecyclerView.visibility = View.GONE
-            }
-        })*/
+       //checkConnection()
+
         return view
     }
     /*fun setUi(){
@@ -106,11 +81,9 @@ class ListFragment : Fragment() {
                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String): Boolean {
                         searchItem.collapseActionView()
-                        searchQuery = query
-                       // model.loadImages(searchQuery!!)
+                        viewModel.setQuery(query)
                         return true
                     }
-
                     override fun onQueryTextChange(newText: String): Boolean {
                         return false
                     }
@@ -123,7 +96,8 @@ class ListFragment : Fragment() {
     private fun initAdapter() {
         imagesListAdapter = ImageAdapter { viewModel.retry() }
         imageRecyclerView.adapter = imagesListAdapter
-        viewModel.imagesList.observe(this, Observer {
+
+        viewModel.imageslist.observe(this, Observer {
             imagesListAdapter.submitList(it)
         })
 
@@ -135,7 +109,7 @@ class ListFragment : Fragment() {
         })
     }
 
-    private fun initState() {
+   private fun initState() {
         errorTextView.setOnClickListener { viewModel.retry() }
         viewModel.getState().observe(this, Observer { state ->
             progressBar.visibility = if (viewModel.listIsEmpty() && state == State.LOADING) View.VISIBLE else View.GONE
@@ -144,5 +118,10 @@ class ListFragment : Fragment() {
                 imagesListAdapter.setState(state ?: State.DONE)
             }
         })
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(LAST_SEARCH_QUERY, viewModel.lastQueryValue())
     }
 }

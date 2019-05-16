@@ -20,7 +20,6 @@ class ImageAdapter(private val retry: () -> Unit) : PagedListAdapter<Hit, Recycl
         else FooterViewHolder.create(retry, parent)
     }
 
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (getItemViewType(position) == DATA_VIEW_TYPE)
             (holder as ImageViewHolder).bind(getItem(position))
@@ -41,7 +40,6 @@ class ImageAdapter(private val retry: () -> Unit) : PagedListAdapter<Hit, Recycl
             override fun areItemsTheSame(oldItem: Hit, newItem: Hit): Boolean {
                 return oldItem.id == newItem.id
             }
-
             override fun areContentsTheSame(oldItem: Hit, newItem: Hit): Boolean {
                 return oldItem == newItem
             }

@@ -11,36 +11,16 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Action
 import io.reactivex.schedulers.Schedulers
 
-//class ImageDataSource(val searchQuery: String): PageKeyedDataSource<Int,Hit>(){
-class ImageDataSource(private val subscriptions: CompositeDisposable, private val apiService: PixabayApiService)
+class ImageDataSource(val searchQuery: String, private val subscriptions: CompositeDisposable, private val apiService: PixabayApiService)
                 : PageKeyedDataSource<Int, Hit>() {
 
     var state: MutableLiveData<State> = MutableLiveData()
     private var retryCompletable: Completable? = null
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, Hit>) {
-       /* val call = apiService.getSearchedbyPaging("fruits", 1, "photo")
-
-        call.enqueue(object : Callback<ImageResponse>{
-            override fun onFailure(call: Call<ImageResponse>, t: Throwable) {
-                Timber.e(t.toString())
-            }
-
-            override fun onResponse(call: Call<ImageResponse>, response: Response<ImageResponse>) {
-                callback.onResult(response.body()?.hits!!,null,2)
-                /*if(response.raw().cacheResponse() != null){
-                    Timber.i("Response come from cache")
-                }
-
-                if(response.raw().networkResponse() != null){
-                    Timber.i("Response come from network")
-                }*/
-            }
-
-        })*/
         updateState(State.LOADING)
         subscriptions.add(
-            apiService.getSearchedbyPaging("fruits",1, "photo")
+            apiService.getSearch(searchQuery,1)
                 .subscribe(
                     { response ->
                         updateState(State.DONE)
@@ -59,22 +39,9 @@ class ImageDataSource(private val subscriptions: CompositeDisposable, private va
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Hit>) {
-        /*val call = apiService.getSearchedbyPaging("fruits", 1, "photo")
-
-        call.enqueue(object : Callback<ImageResponse>{
-            override fun onFailure(call: Call<ImageResponse>, t: Throwable) {
-                Timber.e(t.toString())
-            }
-
-            override fun onResponse(call: Call<ImageResponse>, response: Response<ImageResponse>) {
-                callback.onResult(response.body()?.hits!!,params.key+1)
-            }
-
-        })*/
-
         updateState(State.LOADING)
         subscriptions.add(
-            apiService.getSearchedbyPaging("fruits", params.key+1, "photo")
+            apiService.getSearch(searchQuery, params.key+1)
                 .subscribe(
                     { response ->
                         updateState(State.DONE)

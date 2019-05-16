@@ -10,13 +10,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.android.pixabay.Injection
 import com.android.pixabay.R
 import com.android.pixabay.databinding.FragmentDetailBinding
 import com.android.pixabay.model.Hit
 import com.android.pixabay.model.SharedViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_detail.*
 
 class DetailFragment : Fragment() {
@@ -27,7 +25,7 @@ class DetailFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = activity?.run {
-            ViewModelProviders.of(this).get(SharedViewModel::class.java)
+            ViewModelProviders.of(this, Injection.provideViewModelFactory()).get(SharedViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
         viewModel.selectedImage.observe(this, Observer<Hit> {
@@ -41,7 +39,6 @@ class DetailFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
 
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_detail, container, false)
-        // binding.hit = bhit
         setHasOptionsMenu(true)
 
         binding.detailImageView.setOnViewTapListener { view, x, y ->
@@ -50,6 +47,11 @@ class DetailFragment : Fragment() {
                 View.GONE -> setDetailsVisible()}
         }
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_detail_action, menu)
     }
 
     private fun shareCurrentImage() {
@@ -62,11 +64,6 @@ class DetailFragment : Fragment() {
         shareIntent.putExtra(Intent.EXTRA_TEXT, shareStringBuilder.toString())
         shareIntent.type = "text/plain"
         startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.fragment_detail_action, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -85,20 +82,13 @@ class DetailFragment : Fragment() {
                         ), 1
                     )
                 }*/
-              //  val url = bhit.largeImageURL
                 val imageName = bhit.id.toString()
                 viewModel.downloadImage(detail_imageView,imageName)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeBy (
-                        onSuccess = { file ->
-                            Toast.makeText(context, "$file saved", Toast.LENGTH_SHORT).show()
-                        },
-                        onError = { e ->
-                            Toast.makeText(context, "Error saving file :${e.localizedMessage}", Toast.LENGTH_SHORT).show()
-                        }
-                    )
-
+                viewModel.downloadResult.observe(this, Observer {
+                    it?.let {
+                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                    }
+                })
                 return true
             }
         }

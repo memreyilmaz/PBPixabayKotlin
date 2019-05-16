@@ -9,7 +9,7 @@ class BaseApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         Timber.plant(Timber.DebugTree())
-        BaseApplication.appContext = applicationContext
+        appContext = applicationContext
     }
 
     companion object {

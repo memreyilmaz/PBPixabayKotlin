@@ -1,4 +1,4 @@
-package com.android.pixabay
+package com.android.pixabay.utils
 
 const val BASE_URL = "https://pixabay.com/api/"
 const val KEY = "?key=11868336-ddbb35d81dbcb178d2e654d7d"

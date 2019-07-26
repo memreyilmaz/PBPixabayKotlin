@@ -1,32 +1,38 @@
-package com.android.pixabay.ui
+package com.android.pixabay.view.ui
 
 
 import android.os.Bundle
 import android.view.*
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.android.pixabay.*
-import com.android.pixabay.model.SharedViewModel
-import com.android.pixabay.ui.adapter.ImageAdapter
+import com.android.pixabay.R
+import com.android.pixabay.viewmodel.ViewModelFactory
+import com.android.pixabay.utils.DEFAULT_SEARCH_QUERY
+import com.android.pixabay.utils.LAST_SEARCH_QUERY
+import com.android.pixabay.view.adapter.ImageAdapter
+import com.android.pixabay.viewmodel.SharedViewModel
+import dagger.android.support.DaggerFragment
+import javax.inject.Inject
 
-class ListFragment : Fragment() {
+class ListFragment : DaggerFragment() {
     lateinit var imageRecyclerView : RecyclerView
-    lateinit var errorTextView : TextView
-    lateinit var progressBar : ProgressBar
     private lateinit var viewModel: SharedViewModel
     private lateinit var imagesListAdapter: ImageAdapter
+
+    @Inject
+    internal lateinit var viewModelFactory: ViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+//        viewModel = activity?.run {
+//            ViewModelProviders.of(this, Injection.provideViewModelFactory()).get(SharedViewModel::class.java)
+//        } ?: throw Exception("Invalid Activity")
         viewModel = activity?.run {
-            ViewModelProviders.of(this, Injection.provideViewModelFactory()).get(SharedViewModel::class.java)
+            ViewModelProviders.of(this, viewModelFactory).get(SharedViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
     }
 
@@ -34,38 +40,13 @@ class ListFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_list, container, false)
         setHasOptionsMenu(true)
         imageRecyclerView = view.findViewById(R.id.image) as RecyclerView
-        progressBar = view.findViewById(R.id.progress_bar) as ProgressBar
-        errorTextView = view.findViewById(R.id.txt_error) as TextView
-        val query = savedInstanceState?.getString(LAST_SEARCH_QUERY) ?: DEFAULT_SEARCH_QUERY
-        viewModel.setQuery(query)
-        initAdapter()
-        //initState()
 
-        //  setUi()
-       //checkConnection()
+        val query = savedInstanceState?.getString(LAST_SEARCH_QUERY) ?: DEFAULT_SEARCH_QUERY
+        viewModel.showSearchResults(query)
+        initAdapter()
 
         return view
     }
-    /*fun setUi(){
-        /*  retry_connection_check_button.setOnClickListener {
-              if (ConnectionController.isInternetAvailable(this@MainActivity)!!){
-                  val intent = getIntent()
-                  intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                  finish()
-                  startActivity(intent)
-                  overridePendingTransition(0,0)
-              }
-          }*/
-    }*/
-
-   /* private fun checkConnection(){
-        if (!ConnectionController.isInternetAvailable(activity)!!){
-            imageRecyclerView.visibility = View.GONE
-            error_empty_view.text = getString(R.string.no_connection)
-            error_empty_view.visibility = View.VISIBLE
-            retry_connection_check_button.visibility = View.VISIBLE
-        }
-    }*/
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -81,7 +62,7 @@ class ListFragment : Fragment() {
                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String): Boolean {
                         searchItem.collapseActionView()
-                        viewModel.setQuery(query)
+                        viewModel.showSearchResults(query)
                         return true
                     }
                     override fun onQueryTextChange(newText: String): Boolean {
@@ -101,6 +82,10 @@ class ListFragment : Fragment() {
             imagesListAdapter.submitList(it)
         })
 
+        viewModel.networkState.observe(this, Observer {
+            imagesListAdapter.setState(it)
+        })
+
         imagesListAdapter.setOnItemClickListener(object: ImageAdapter.OnItemClickListener{
             override fun onItemClick(v: View, pos: Int) {
                 viewModel.setSelectedImage(imagesListAdapter.getHitAtPosition(pos)!!)
@@ -109,19 +94,8 @@ class ListFragment : Fragment() {
         })
     }
 
-   private fun initState() {
-        errorTextView.setOnClickListener { viewModel.retry() }
-        viewModel.getState().observe(this, Observer { state ->
-            progressBar.visibility = if (viewModel.listIsEmpty() && state == State.LOADING) View.VISIBLE else View.GONE
-            errorTextView.visibility = if (viewModel.listIsEmpty() && state == State.ERROR) View.VISIBLE else View.GONE
-            if (!viewModel.listIsEmpty()) {
-                imagesListAdapter.setState(state ?: State.DONE)
-            }
-        })
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(LAST_SEARCH_QUERY, viewModel.lastQueryValue())
+        outState.putString(LAST_SEARCH_QUERY, viewModel.lastSearchQueryValue())
     }
 }

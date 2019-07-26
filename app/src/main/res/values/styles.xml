@@ -23,6 +23,7 @@
         <item name="android:paddingTop">@dimen/padding_4</item>
         <item name="android:paddingBottom">@dimen/padding_4</item>
         <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
     <style name="EmptyTextViewStyle" parent="TextViewStyle">
@@ -39,7 +40,6 @@
     <style name="CardViewStyle" parent="CardView">
         <item name="cardCornerRadius">@dimen/cardView_radius</item>
         <item name="cardElevation">@dimen/padding_4</item>
-        <item name="cardBackgroundColor">@color/darkGray</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>

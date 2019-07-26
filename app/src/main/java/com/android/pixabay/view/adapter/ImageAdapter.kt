@@ -1,18 +1,18 @@
-package com.android.pixabay.ui.adapter
+package com.android.pixabay.view.adapter
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.android.pixabay.State
 import com.android.pixabay.model.Hit
+import com.android.pixabay.utils.NetworkState
 
 class ImageAdapter(private val retry: () -> Unit) : PagedListAdapter<Hit, RecyclerView.ViewHolder>(ImagesDiffCallback) {
 
     private val DATA_VIEW_TYPE = 1
     private val FOOTER_VIEW_TYPE = 2
-    private var state = State.LOADING
+    private var networkState: NetworkState? = null
     lateinit var mListener: OnItemClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -23,7 +23,7 @@ class ImageAdapter(private val retry: () -> Unit) : PagedListAdapter<Hit, Recycl
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (getItemViewType(position) == DATA_VIEW_TYPE)
             (holder as ImageViewHolder).bind(getItem(position))
-        else (holder as FooterViewHolder).bind(state)
+        else (holder as FooterViewHolder).bind(networkState)
         if (holder is ImageViewHolder){
             holder.itemView.setOnClickListener { v ->
                 mListener.onItemClick(v, holder.layoutPosition)
@@ -51,11 +51,11 @@ class ImageAdapter(private val retry: () -> Unit) : PagedListAdapter<Hit, Recycl
     }
 
     private fun hasFooter(): Boolean {
-        return super.getItemCount() != 0 && (state == State.LOADING || state == State.ERROR)
+        return super.getItemCount() != 0 && (networkState == NetworkState.LOADING || networkState?.msg != null)
     }
 
-    fun setState(state: State) {
-        this.state = state
+    fun setState(state: NetworkState) {
+        this.networkState = state
         notifyItemChanged(super.getItemCount())
     }
 

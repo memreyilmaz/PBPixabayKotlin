@@ -8,7 +8,7 @@
             android:id="@+id/recipe_name_card_view"
             style="@style/CardViewStyle">
 
-        <LinearLayout
+        <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -23,11 +23,16 @@
             <TextView
                     android:id="@+id/user_name_textView"
                     style="@style/CardViewTextStyle"
-                    android:paddingBottom="@dimen/padding_0" />
+                    android:alpha="0.7"
+                    android:layout_above="@id/tag_textView"
+                    android:paddingBottom="@dimen/padding_0"/>
 
             <TextView
                     android:id="@+id/tag_textView"
-                    style="@style/CardViewTextStyle" />
-        </LinearLayout>
+                    android:alpha="0.7"
+                    style="@style/CardViewTextStyle"
+                    android:layout_alignParentBottom="true"
+                    android:paddingTop="@dimen/padding_0"/>
+        </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>

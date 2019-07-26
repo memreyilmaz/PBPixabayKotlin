@@ -4,13 +4,13 @@
             xmlns:tools="http://schemas.android.com/tools" android:id="@+id/navigation" app:startDestination="@id/listFragment">
 
     <fragment android:id="@+id/listFragment"
-              android:name="com.android.pixabay.ui.ListFragment"
+              android:name="com.android.pixabay.view.ui.ListFragment"
               android:label="@string/app_name">
         <action android:id="@+id/action_listFragment_to_detailFragment"
                 app:destination="@id/detailFragment"
                 app:popUpTo="@+id/listFragment"/>
     </fragment>
     <fragment android:id="@+id/detailFragment"
-              android:name="com.android.pixabay.ui.DetailFragment"
+              android:name="com.android.pixabay.view.ui.DetailFragment"
               android:label="DetailFragment"/>
 </navigation>

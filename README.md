@@ -24,7 +24,7 @@ List of libraries used in the project
 
 [Timber](https://github.com/JakeWharton/timber) - A logger with a small, extensible API which provides utility on top of Android's normal Log class.
 
-![Main](Screenshot_1554720387.png)
-![Detail](Screenshot_1554720403.png)
-![Search](Screenshot_1554720413.png)
+![Main](Screenshot_1564170267.png)
+![Detail](Screenshot_1564170340.png)
+![Search](Screenshot_1564170363.png)
 

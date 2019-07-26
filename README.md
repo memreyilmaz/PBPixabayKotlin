@@ -2,7 +2,7 @@
 
 Pixabay for PB
 
-Android Application on Kotlin to show images by using Pixabay Api
+MVVM Android Application on Kotlin to show images by using Pixabay Api
 
 List of libraries used in the project
 
